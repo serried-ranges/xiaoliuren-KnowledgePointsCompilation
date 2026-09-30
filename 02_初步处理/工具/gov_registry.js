@@ -1,7 +1,7 @@
 // Build source registry for the governance raw zone
 const fs = require('fs');
 const path = require('path');
-const BASE = 'D:/联网查询xiaoliuren/小六壬资料治理/01_原始资料（保持原样）';
+const BASE = 'D:/联网查询xiaoliuren/小六壬资料治理/01_原始资料';
 const rows = [['编号', '文件名', '类型', '来源站点', '原始URL', '获取日期', '保存位置', '备注']];
 let n = 0;
 const add = (file, type, site, url, loc, note) => { n++; rows.push([n, file, type, site, url, '2026-10', loc, note]); };
@@ -27,5 +27,5 @@ add('居家必用事类全集-第3册-国图扫描.pdf', 'PDF（古籍扫描）'
 add('头书长历1688-早稻田藏本-全68页', '图片集（68张jpg）', '早稻田大学图书馆数字档', 'https://archive.wul.waseda.ac.jp/kosho/bunko31/bunko31_e1341/', '01_原始资料/文档与扫描', '1688年刊本逐页图像');
 
 const csv = rows.map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\n');
-fs.writeFileSync('D:/联网查询xiaoliuren/小六壬资料治理/01_原始资料（保持原样）/来源登记表.csv', '\ufeff' + csv, 'utf8');
+fs.writeFileSync('D:/联网查询xiaoliuren/小六壬资料治理/01_原始资料/来源登记表.csv', '\ufeff' + csv, 'utf8');
 console.log('registry rows:', rows.length - 1);
