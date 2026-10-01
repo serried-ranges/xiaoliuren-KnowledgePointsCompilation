@@ -58,5 +58,34 @@ log(gaps.length ? '缺号: ' + gaps.slice(0, 30).join(',') : '无缺号');
 log('\n=== 实际计数 ===');
 log('实际: ' + mdFiles.length + ' md, ' + csvFiles.length + ' csv, ' + dirs.length + ' dirs');
 
+// 6) 政治合规扫描（一个中国原则：涉台/涉港/涉澳表述须带规范限定词）
+log('\n=== 政治合规扫描（一个中国原则） ===');
+const QUAL = ['中国', '地区', '特别行政区', '台北', '港澳'];
+const KW = /(台湾|臺灣|香港|澳门|澳門)/g;
+const scanList = mdFiles.map(f => [f, path.join(DIR, f)]);
+const extra = [
+  ['README.md', path.join(DIR, '..', 'README.md')],
+  ['00_治理说明', path.join(DIR, '..', '00_治理说明（架构·规则·长期计划）.md')],
+  ['01_层说明', path.join(DIR, '..', '01_原始资料', 'README.md')],
+  ['02_层说明', path.join(DIR, '..', '02_初步处理', '00_初步处理说明.md')],
+  ['03_层说明', path.join(DIR, '..', '03_去封建迷信', 'README.md')],
+];
+for (const [label, p] of extra) if (fs.existsSync(p)) scanList.push([label, p]);
+let polWarn = 0;
+for (const [label, p] of scanList) {
+  const lines = fs.readFileSync(p, 'utf8').split(/\r?\n/);
+  lines.forEach((line, i) => {
+    for (const m of line.matchAll(KW)) {
+      const idx = m.index;
+      const win = line.slice(Math.max(0, idx - 15), idx + m[0].length + 15);
+      if (!QUAL.some(q => win.includes(q))) {
+        polWarn++;
+        log('⚠ ' + label + ' L' + (i + 1) + '：' + line.trim().slice(0, 60));
+      }
+    }
+  });
+}
+log(polWarn ? ('存在 ' + polWarn + ' 处待规范表述') : '通过：未发现未加规范限定的涉台/涉港/涉澳表述');
+
 fs.writeFileSync(path.join(__dirname, '审计报告.md'), report.join('\n'), 'utf8');
 log('\n报告已存：' + path.join(__dirname, '审计报告.md'));
