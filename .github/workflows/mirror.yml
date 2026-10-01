@@ -1,0 +1,45 @@
+name: 镜像同步到 AtomGit & Gitee
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    name: 同步代码镜像
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出完整历史（含所有分支与标签）
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 配置 SSH 私钥
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.MIRROR_SSH_PRIVATE_KEY }}
+
+      - name: 写入 known_hosts（AtomGit / Gitee）
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -t rsa,ed25519 atomgit.com >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -t rsa,ed25519 gitee.com >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: 推送镜像到 AtomGit
+        run: |
+          git remote add atomgit git@atomgit.com:serried-ranges/xiaoliuren-KnowledgePointsCompilation.git
+          # 从 refs/remotes/origin/* 推送（含全部分支），避免 refs/heads/* 只含检出分支
+          # 导致 --prune 误删远端默认分支 main 而被拒绝
+          git push --prune --force atomgit 'refs/remotes/origin/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
+
+      - name: 推送镜像到 Gitee
+        run: |
+          git remote add gitee git@gitee.com:serried-ranges/xiaoliuren-KnowledgePointsCompilation.git
+          git push --prune --force gitee 'refs/remotes/origin/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
+
+      - name: 完成通知
+        run: |
+          echo "镜像已同步到 AtomGit 与 Gitee"
+          echo "GitHub 全部分支: $(git branch -r | tr -d ' ' | tr '\n' ' ')"

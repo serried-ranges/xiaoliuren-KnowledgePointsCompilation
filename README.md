@@ -6,6 +6,22 @@
 
 ---
 
+## 🪞 多仓库镜像同步说明
+
+本项目采用 **一主两备** 架构托管：
+
+| 平台 | 角色 | 仓库地址 |
+|------|------|---------|
+| **GitHub** | 🟢 主仓库 | https://github.com/serried-ranges/xiaoliuren-KnowledgePointsCompilation |
+| **AtomGit** | 🟡 备份从库 | https://atomgit.com/serried-ranges/xiaoliuren-KnowledgePointsCompilation |
+| **Gitee** | 🟡 备份从库 | https://gitee.com/serried-ranges/xiaoliuren-KnowledgePointsCompilation |
+
+> ⚠️ 如需提 Issue / PR，请统一前往 GitHub 主仓库。
+> 两个备份仓库由 GitHub Actions 自动强制同步，仅作代码镜像与国内加速访问用途。
+> 日常 `git push` 一次即可同步三仓（本地 `origin` 已配置多 push 地址）。
+
+---
+
 ## 一、仓库结构（治理体系）
 
 ```
