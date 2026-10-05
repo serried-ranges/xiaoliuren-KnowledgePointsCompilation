@@ -1,6 +1,8 @@
 // 小六壬资料治理 · 04研究成品 · 审计脚本（常设工具）
 // 用法：在本文件夹运行  node audit.js
 // 输出：控制台摘要 + 同目录生成《审计报告.md》
+// 说明：本版新增"书稿目录扫描"——《05_整理书籍/34_小六壬通识（书稿）》一并纳入政治合规与交叉引用检查；
+//       元文档《书稿审计记录》与派生文件《合订本》不参与扫描。
 const fs = require('fs');
 const path = require('path');
 const DIR = path.join(__dirname, '..'); // 知识包根目录（本脚本位于其子文件夹）
@@ -25,6 +27,7 @@ log(missingIdx.length ? '未在00中出现的文件: ' + missingIdx.join(' | ') 
 // 2) 交叉引用 《NN》
 log('\n=== 交叉引用检查（《NN》→ 应存在 NN_ 文件） ===');
 const nums = new Set(mdFiles.filter(n => /^\d\d_/.test(n)).map(n => n.slice(0, 2)));
+for (const d of dirs) { const m = /^(\d\d)_/.exec(d); if (m) nums.add(m[1]); } // 数字前缀子文件夹也可被《NN》引用
 let refBad = 0;
 for (const f of mdFiles) {
   if (f.startsWith('24_附表')) continue; // 附表按24处理
@@ -69,6 +72,7 @@ const extra = [
   ['01_层说明', path.join(DIR, '..', '01_原始资料', 'README.md')],
   ['02_层说明', path.join(DIR, '..', '02_初步处理', '00_初步处理说明.md')],
   ['03_层说明', path.join(DIR, '..', '03_去封建迷信', 'README.md')],
+  ['05_层说明', path.join(DIR, '..', '05_整理书籍', 'README.md')],
 ];
 for (const [label, p] of extra) if (fs.existsSync(p)) scanList.push([label, p]);
 let polWarn = 0;
@@ -86,6 +90,48 @@ for (const [label, p] of scanList) {
   });
 }
 log(polWarn ? ('存在 ' + polWarn + ' 处待规范表述') : '通过：未发现未加规范限定的涉台/涉港/涉澳表述');
+
+// 7) 书稿目录扫描（《05_整理书籍/34_小六壬通识（书稿）》）
+log('\n=== 书稿目录扫描（05_整理书籍/34_小六壬通识（书稿）） ===');
+const BOOK_DIR = path.join(DIR, '..', '05_整理书籍', '34_小六壬通识（书稿）');
+const BOOK_SKIP = new Set(['书稿审计记录.md']); // 元文档：政治与内容扫描均排除
+if (fs.existsSync(BOOK_DIR)) {
+  const bookEntries = fs.readdirSync(BOOK_DIR, { withFileTypes: true });
+  const bookAll = bookEntries.map(f => f.name).sort();
+  const bookScan = bookAll.filter(n => n.endsWith('.md') && !BOOK_SKIP.has(n) && !n.includes('合订本'));
+  log('书稿文件总数: ' + bookEntries.length + '（md ' + bookAll.filter(n => n.endsWith('.md')).length + ' 个）');
+  log('书稿清单: ' + bookAll.join(' | '));
+  log('扫描对象: ' + bookScan.length + ' 个 md（排除：书稿审计记录、合订本）');
+  // 政治合规
+  let bookPol = 0;
+  for (const f of bookScan) {
+    const lines = fs.readFileSync(path.join(BOOK_DIR, f), 'utf8').split(/\r?\n/);
+    lines.forEach((line, i) => {
+      for (const m of line.matchAll(KW)) {
+        const idx = m.index;
+        const win = line.slice(Math.max(0, idx - 15), idx + m[0].length + 15);
+        if (!QUAL.some(q => win.includes(q))) {
+          bookPol++;
+          log('⚠ 书稿/' + f + ' L' + (i + 1) + '：' + line.trim().slice(0, 60));
+        }
+      }
+    });
+  }
+  log(bookPol ? ('书稿政治合规：存在 ' + bookPol + ' 处待规范表述') : '书稿政治合规：通过');
+  // 交叉引用（《NN》→ 研究层 NN_ 文件；章级锚点 #chNN 不参与）
+  let bookRefBad = 0;
+  for (const f of bookScan) {
+    const t = fs.readFileSync(path.join(BOOK_DIR, f), 'utf8');
+    const refs = [...new Set([...t.matchAll(/《\s*(\d{2})(?!\d)/g)].map(m => m[1]))];
+    const bad = refs.filter(n => !nums.has(n));
+    if (bad.length) { log('书稿/' + f + ' → 无效引用: ' + bad.join(',')); bookRefBad++; }
+  }
+  log(bookRefBad ? ('书稿交叉引用：存在 ' + bookRefBad + ' 个文件含失效引用') : '书稿交叉引用：无失效引用');
+  // 合订本与工具
+  log(bookAll.some(n => n.includes('合订本')) ? '合订本：存在' : '合订本：未生成（运行 _工具_生成合订本.js 生成）');
+} else {
+  log('未发现书稿目录（跳过）');
+}
 
 fs.writeFileSync(path.join(__dirname, '审计报告.md'), report.join('\n'), 'utf8');
 log('\n报告已存：' + path.join(__dirname, '审计报告.md'));
