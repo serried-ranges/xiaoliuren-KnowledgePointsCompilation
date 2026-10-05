@@ -1,7 +1,7 @@
 // 小六壬资料治理 · 04研究成品 · 内容审计脚本（门禁：封建迷信等内容的扫描与降权提示）
 // 用法：在本文件夹运行  node content_audit.js
 // 输出：控制台摘要 + 同目录生成《内容审计报告.md》
-// 说明：本版新增"书稿目录扫描"（《05_整理书籍/34_小六壬通识（书稿）》）；元文档《书稿审计记录》与派生文件《合订本》不参与扫描。
+// 说明：本版新增"书稿目录扫描"（《05_整理书籍/01_小六壬通识》）；元文档《书稿审计记录》与派生文件《合订本》不参与扫描。
 const fs = require('fs');
 const path = require('path');
 const DIR = path.join(__dirname, '..'); // 知识包根目录
@@ -39,8 +39,8 @@ for (const r of rows) {
   out += `| ${r.file} | ${r.hits['神通符咒']} | ${r.hits['仙鬼巫']} | ${r.hits['命理恐吓']} | ${r.hits['改运化解']} | ${r.hits['信仰供养']} | ${r.hits['疾病干预']} | **${r.total}** |\n`;
 }
 
-// === 书稿目录扫描（《05_整理书籍/34_小六壬通识（书稿）》；排除元文档与派生文件） ===
-const BOOK = path.join(DIR, '..', '05_整理书籍', '34_小六壬通识（书稿）');
+// === 书稿目录扫描（《05_整理书籍/01_小六壬通识》；排除元文档与派生文件） ===
+const BOOK = path.join(DIR, '..', '05_整理书籍', '01_小六壬通识');
 let bookTotal = 0, bookCount = 0;
 if (fs.existsSync(BOOK)) {
   const bfiles = fs.readdirSync(BOOK).filter(f => f.endsWith('.md') && f !== '书稿审计记录.md' && !f.includes('合订本')).sort();
@@ -48,7 +48,7 @@ if (fs.existsSync(BOOK)) {
   rows2.sort((a, b) => b.total - a.total);
   bookTotal = rows2.reduce((s, r) => s + r.total, 0);
   bookCount = bfiles.length;
-  out += '\n## 书稿目录扫描（05_整理书籍/34_小六壬通识（书稿））\n\n';
+  out += '\n## 书稿目录扫描（05_整理书籍/01_小六壬通识）\n\n';
   out += '> 扫描对象 ' + bfiles.length + ' 个 md；已排除：书稿审计记录（元文档）、合订本（派生文件）。命中语境均为：历史断辞原文、名称级记录、门禁术语。\n\n';
   out += '| 文档 | 神通符咒 | 仙鬼巫 | 命理恐吓 | 改运化解 | 信仰供养 | 疾病干预 | 合计 |\n|---|---|---|---|---|---|---|---|\n';
   for (const r of rows2) {
