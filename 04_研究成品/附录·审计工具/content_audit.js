@@ -1,7 +1,7 @@
 // 小六壬资料治理 · 04研究成品 · 内容审计脚本（门禁：封建迷信等内容的扫描与降权提示）
 // 用法：在本文件夹运行  node content_audit.js
 // 输出：控制台摘要 + 同目录生成《内容审计报告.md》
-// 说明：本版新增"书稿目录扫描"（《05_整理书籍/01_小六壬通识》）；元文档《书稿审计记录》与派生文件《合订本》不参与扫描。
+// 说明：本版新增"书稿目录扫描"（《05_整理书籍/01_小六壬通识》）与"附录目录扫描"（附录·* 子文件夹）；元文档《书稿审计记录》与派生文件《合订本》不参与扫描；《附录·审计工具》目录不参与扫描。
 const fs = require('fs');
 const path = require('path');
 const DIR = path.join(__dirname, '..'); // 知识包根目录
@@ -39,6 +39,31 @@ for (const r of rows) {
   out += `| ${r.file} | ${r.hits['神通符咒']} | ${r.hits['仙鬼巫']} | ${r.hits['命理恐吓']} | ${r.hits['改运化解']} | ${r.hits['信仰供养']} | ${r.hits['疾病干预']} | **${r.total}** |\n`;
 }
 
+// === 附录目录扫描（附录·* 子文件夹内的 md；排除审计工具目录及其生成的报告） ===
+const appendixDirs = fs.readdirSync(DIR, { withFileTypes: true })
+  .filter(d => d.isDirectory() && d.name.startsWith('附录·') && d.name !== '附录·审计工具')
+  .map(d => d.name).sort();
+const appendixRows = [];
+for (const dn of appendixDirs) {
+  (function walk(dir, rel) {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) walk(p, rel + e.name + '/');
+      else if (e.name.endsWith('.md')) { const r = scanFile(p); r.file = rel + e.name; appendixRows.push(r); }
+    }
+  })(path.join(DIR, dn), dn + '/');
+}
+if (appendixRows.length) {
+  appendixRows.sort((a, b) => b.total - a.total);
+  out += '\n## 附录目录扫描（附录·* 子文件夹）\n\n';
+  out += '> 扫描对象 ' + appendixRows.length + ' 个 md（不含《附录·审计工具》目录）。\n\n';
+  out += '| 文档 | 神通符咒 | 仙鬼巫 | 命理恐吓 | 改运化解 | 信仰供养 | 疾病干预 | 合计 |\n|---|---|---|---|---|---|---|---|\n';
+  for (const r of appendixRows) {
+    out += `| ${r.file} | ${r.hits['神通符咒']} | ${r.hits['仙鬼巫']} | ${r.hits['命理恐吓']} | ${r.hits['改运化解']} | ${r.hits['信仰供养']} | ${r.hits['疾病干预']} | **${r.total}** |\n`;
+  }
+  out += `\n*附录命中合计：${appendixRows.reduce((s, r) => s + r.total, 0)} 处（C 级研究对象口径）*\n`;
+}
+
 // === 书稿目录扫描（《05_整理书籍/01_小六壬通识》；排除元文档与派生文件） ===
 const BOOK = path.join(DIR, '..', '05_整理书籍', '01_小六壬通识');
 let bookTotal = 0, bookCount = 0;
@@ -57,6 +82,6 @@ if (fs.existsSync(BOOK)) {
   out += `\n*书稿命中合计：${bookTotal} 处（C 级研究对象口径）*\n`;
 }
 
-out += `\n*生成时间：${new Date().toISOString().slice(0, 10)} ｜ 扫描对象：研究层 ${files.length} 份文档${bookCount ? ' ＋ 书稿 ' + bookCount + ' 份文档' : ''}*\n`;
+out += `\n*生成时间：${new Date().toISOString().slice(0, 10)} ｜ 扫描对象：研究层 ${files.length} 份文档 ＋ 附录 ${appendixRows.length} 份${bookCount ? ' ＋ 书稿 ' + bookCount + ' 份文档' : ''}*\n`;
 fs.writeFileSync(path.join(__dirname, '内容审计报告.md'), out, 'utf8');
-console.log('内容审计完成：研究层 ' + files.length + ' 份，共命中 ' + rows.reduce((s, r) => s + r.total, 0) + ' 处；书稿 ' + bookCount + ' 份，共命中 ' + bookTotal + ' 处（C级研究对象）。报告：内容审计报告.md');
+console.log('内容审计完成：研究层 ' + files.length + ' 份＋附录 ' + appendixRows.length + ' 份，共命中 ' + (rows.reduce((s, r) => s + r.total, 0) + appendixRows.reduce((s, r) => s + r.total, 0)) + ' 处；书稿 ' + bookCount + ' 份，共命中 ' + bookTotal + ' 处（C级研究对象）。报告：内容审计报告.md');
