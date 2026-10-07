@@ -1,4 +1,4 @@
-# 附录 E　来源清单（#1—#144）
+# 附录 E　来源清单（#1—#146）
 
 > 编号沿用研究层《10 资料来源清单》。可信度：★★★＝古籍原文/学术机构/官方文献；★★＝研究文章、从业者官方发布；★＝普通网络教程、论坛内容（含转抄，需谨慎）。
 > 提示：链接为整理时的检索结果，可能随时间失效；引用重要事实前请回到原始出处核对。
@@ -91,7 +91,7 @@
 | 57 | 江阳君《教程15：装五星的正确排法》 | ★★ | http://www.jiangyangjun.com/post/95.html |
 | 58 | 江阳君《教程30/35：六神临六宫、五星临六亲》 | ★★ | jiangyangjun.com/post/110.html 等 |
 | 59 | 江春义《教程2：学小六壬要有什么基础》 | ★★ | http://www.jiangchunyi.com/post/499.html |
-| 60 | 江春义博客《教程8》《教程14》 | ★★ | jiangchunyi.com/post/505、511.html |
+| 60 | 江春义博客《教程8》《教程14》 | ★★ | jiangchunyi.com/post/505.html、jiangchunyi.com/post/511.html |
 | 61 | 易德轩《小六壬之六神及其用法》《五星用法》 | ★ | qimen.yi958.com/lrrk/8912、8908 |
 | 62 | Scribd《小六壬活六神法》 | ★ | https://www.scribd.com/document/784502093/ |
 | 63 | "道传小六壬在线排盘"教程页 | ★ | https://ai.xiao6ren.com/tutorial.html |
@@ -107,7 +107,7 @@
 | 73 | atong.run《小六壬感情算法》 | ★ | https://atong.run/posts/243474076/index.html |
 | 74 | 网易《小六壬秘传口诀：断事要明白六神特性》 | ★ | https://www.163.com/dy/article/IPUKKKIS0521C9T8.html |
 | 75 | ProcessOn《小六壬速断》思维导图 | ★ | https://www.processon.com/view/61de55ce5653bb06cbbc5beb |
-| 76 | 脉脉《小六壬的解释和速断》 | ★ | https://maimai.cn/article/detail?fid=417336009 |
+| 76 | 脉脉《小六壬的解释和速断》 | ★ | https://maimai.cn/article/detail?fid=417336009（2026-10 抽检 404，或需登录） |
 | 77 | 江阳君教程分类页（13 页全目录） | ★★ | jiangyangjun.com/category-5_2.html 至 _13.html |
 | 78 | 江阳君《官方教程电子书正式发布》 | ★★ | http://www.jiangyangjun.com/post/82.html |
 | 79 | 江春义《江氏小六壬与其它小六壬的区别》 | ★★ | http://www.jiangchunyi.com/post/272.html |
@@ -147,7 +147,7 @@
 | 113 | GitHub《小六壬》学习笔记 | ★ | github.com/Auroraol/-divination（附录存件） |
 | 114 | 168易享《邵一尘 小六壬解惑 678页》 | ★ | 168855.xyz（文献线索） |
 | 115 | 0467 资源站《道家小六壬掐指全套教学课程》 | ★ | 0467.cc/detail-10399.html（卷本目录证据） |
-| 116 | 趣资源（qzy8）小六壬课程列表 | ★ | qzy8.com/yi-jing-feng-shui/xiao-liu-ren |
+| 116 | 趣资源（qzy8）小六壬课程列表 | ★ | qzy8.com/yi-jing-feng-shui/xiao-liu-ren（2026-10 抽检 404，或已改版） |
 | 117 | 易德居转载《小六壬答疑》（四明居士） | ★ | m.638300.com/p/32476.html |
 | 118 | dalazy《邵一尘小六壬》上下册188页 | ★ | dalazy.com/493.html（未获取） |
 | 119 | 夜九优 9wdn《道家小六壬》（邵氏原文镜像） | ★★ | 9wdn.com/detail?id=1097 |
@@ -176,9 +176,11 @@
 | 142 | 江氏官方排盘系统 V2.0（含 js 源码） | ★★ | http://www.jiangyangjun.com/paipan/ |
 | 143 | wizardjza《民间掐指一算》（中国台湾站点） | ★ | https://www.wizardjza.com/post.php?action=view&id=18 |
 | 144 | 《江氏小六壬 官方教程（第一版）》（江春义／江阳君，118 页） | ★★★ | （官方电子版；2024-08） |
+| 145 | 道传小六壬·六卷合抄本（御法门手抄本，146 页扫描；taoismer.com，2024-10 公开） | ★★ | https://taoismer.com/《道传小六壬》/ |
+| 146 | 国学资源网《道传小六壬全6卷合集》条目页（六卷目录；付费站） | ★ | https://www.guoxueziyuan.com/101.html |
 
 > **整理方法与局限**：以"中文关键词多轮检索"为主，优先采信古籍原文、官方文献与研究性长文；部分网页为转载内容、未逐条溯源；部分古籍未见高质量点校本；流派口诀无法穷尽。本书不对占卜内容作真伪、灵验判断。
 
 ---
 
-*本附录依据研究层《10 资料来源清单》（第 27 版口径，来源 #1—#144）转录整理；完整"迭代说明"与检索备注见研究层原文档。*
+*本附录依据研究层《10 资料来源清单》（第 28 版口径，来源 #1—#146）转录整理；完整"迭代说明"与检索备注见研究层原文档。*
