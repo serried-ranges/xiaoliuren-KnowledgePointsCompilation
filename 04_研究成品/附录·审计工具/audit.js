@@ -1,7 +1,7 @@
 // 小六壬资料治理 · 04研究成品 · 审计脚本（常设工具）
 // 用法：在本文件夹运行  node audit.js
 // 输出：控制台摘要 + 同目录生成《审计报告.md》
-// 说明：本版新增"书稿目录扫描"——《05_整理书籍/01_小六壬通识》一并纳入政治合规与交叉引用检查；
+// 说明：本版新增"书稿目录扫描"——《06_小六壬通识/书稿》一并纳入政治合规与交叉引用检查；
 //       元文档《书稿审计记录》与派生文件《合订本》不参与扫描。
 const fs = require('fs');
 const path = require('path');
@@ -72,7 +72,8 @@ const extra = [
   ['01_层说明', path.join(DIR, '..', '01_原始资料', 'README.md')],
   ['02_层说明', path.join(DIR, '..', '02_初步处理', '00_初步处理说明.md')],
   ['03_层说明', path.join(DIR, '..', '03_去封建迷信', 'README.md')],
-  ['05_层说明', path.join(DIR, '..', '05_整理书籍', 'README.md')],
+  ['05_层说明', path.join(DIR, '..', '05_书籍整理', 'README.md')],
+  ['06_层说明', path.join(DIR, '..', '06_小六壬通识', 'README.md')],
 ];
 for (const [label, p] of extra) if (fs.existsSync(p)) scanList.push([label, p]);
 let polWarn = 0;
@@ -91,9 +92,9 @@ for (const [label, p] of scanList) {
 }
 log(polWarn ? ('存在 ' + polWarn + ' 处待规范表述') : '通过：未发现未加规范限定的涉台/涉港/涉澳表述');
 
-// 7) 书稿目录扫描（《05_整理书籍/01_小六壬通识》）
-log('\n=== 书稿目录扫描（05_整理书籍/01_小六壬通识） ===');
-const BOOK_DIR = path.join(DIR, '..', '05_整理书籍', '01_小六壬通识');
+// 7) 书稿目录扫描（《06_小六壬通识/书稿》）
+log('\n=== 书稿目录扫描（06_小六壬通识/书稿） ===');
+const BOOK_DIR = path.join(DIR, '..', '06_小六壬通识', '书稿');
 const BOOK_SKIP = new Set(['书稿审计记录.md']); // 元文档：政治与内容扫描均排除
 if (fs.existsSync(BOOK_DIR)) {
   const bookEntries = fs.readdirSync(BOOK_DIR, { withFileTypes: true });

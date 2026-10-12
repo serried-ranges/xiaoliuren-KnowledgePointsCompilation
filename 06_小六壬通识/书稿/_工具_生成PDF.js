@@ -2,7 +2,7 @@
 // 用法：在本文件夹运行  node _工具_生成PDF.js   （或双击 _工具_生成PDF.bat）
 // 流程：①重生成合订本 md → ②MD→HTML（含排版 CSS）→ ③Paged.js 浏览器内分页（目录页码＋页脚页码）
 //       → ④Edge/Chrome 无头 CDP 打印 PDF（自动生成书签目录）
-// 输出：小六壬通识·合订本.pdf（本文件夹）
+// 输出：小六壬通识·合订本.pdf（上一级目录＝06_小六壬通识/ 外层）
 // 依赖文件：_工具_paged.polyfill.js（Paged.js v0.4.3，MIT；本地附带，用于目录/页脚页码）
 // 可选环境变量：
 //   PDF_BROWSER=C:\path\to\msedge.exe   指定浏览器（默认自动查找 Edge/Chrome）
@@ -14,7 +14,7 @@ const { execFileSync, spawn } = require('child_process');
 const { pathToFileURL } = require('url');
 
 const DIR = __dirname;
-const OUT_PDF = path.join(DIR, '小六壬通识·合订本.pdf');
+const OUT_PDF = path.join(DIR, '..', '小六壬通识·合订本.pdf');
 const MD_FILE = path.join(DIR, '小六壬通识·合订本.md');
 const PAGED_FILE = path.join(DIR, '_工具_paged.polyfill.js');
 
