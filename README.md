@@ -23,8 +23,8 @@
 | **Gitee** | 🟡 备份从库 | https://gitee.com/serried-ranges/xiaoliuren-KnowledgePointsCompilation |
 
 > ⚠️ 如需提 Issue / PR，请统一前往 GitHub 主仓库。
-> 两个备份仓库由 GitHub Actions 自动强制同步，仅作代码镜像与国内加速访问用途。
-> 维护者本机 `origin` 已配置多 push 地址：日常 `git push` 一次即可同步三仓。
+> 两个备份仓库仅作代码镜像与国内加速访问用途。
+> **同步方式（2026-10-12 修订）**：①**AtomGit** 由 GitHub Actions（`.github/workflows/mirror.yml`）自动强制同步；②**Gitee** 因海外运行器推送"大仓"（含 >50MB 扫描件）易超时，改由**维护者本机多 push** 同步——本机 `origin` 已配置 **3 个 push 地址**（GitHub＋AtomGit＋Gitee），日常 `git push` 一次即同步三仓；Actions 中的 Gitee 步骤设为"允许失败"（`continue-on-error`）。
 
 ---
 
