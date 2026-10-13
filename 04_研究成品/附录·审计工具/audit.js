@@ -18,23 +18,66 @@ log('MD (' + mdFiles.length + '): ' + mdFiles.join(' | '));
 log('CSV (' + csvFiles.length + '): ' + csvFiles.join(' | '));
 log('DIR (' + dirs.length + '): ' + dirs.join(' | '));
 
+// 0) 两位文件前缀重名提示；唯一编号映射见 00 总览
+log('\n=== 编号重名提示（两位文件前缀） ===');
+const prefixGroups = new Map();
+for (const name of [...mdFiles, ...csvFiles]) {
+  const m = /^(\d\d)_/.exec(name);
+  if (!m) continue;
+  if (!prefixGroups.has(m[1])) prefixGroups.set(m[1], []);
+  prefixGroups.get(m[1]).push(name);
+}
+const prefixCollisions = [...prefixGroups.entries()].filter(([, names]) => names.length > 1);
+if (!prefixCollisions.length) log('无重复两位前缀');
+else for (const [prefix, names] of prefixCollisions) {
+  log(prefix + '：' + names.join(' | ') + '；按《00 总览与阅读指南》的唯一编号规则引用');
+}
+
 // 1) 00 索引完整性
 const idx = fs.readFileSync(path.join(DIR, '00_总览与阅读指南.md'), 'utf8');
 log('\n=== 00 索引完整性 ===');
 const missingIdx = [...mdFiles, ...csvFiles].filter(n => n !== '00_总览与阅读指南.md' && !idx.includes(n.replace('.md', '').slice(0, 12)));
 log(missingIdx.length ? '未在00中出现的文件: ' + missingIdx.join(' | ') : '全部文件均被00提及');
 
-// 2) 交叉引用 《NN》
-log('\n=== 交叉引用检查（《NN》→ 应存在 NN_ 文件） ===');
+// 2) Cross references: legacy 《NN》 plus stable R/D/B/BA identifiers
+log('\n=== 交叉引用检查（旧编号与唯一编号） ===');
 const nums = new Set(mdFiles.filter(n => /^\d\d_/.test(n)).map(n => n.slice(0, 2)));
 for (const d of dirs) { const m = /^(\d\d)_/.exec(d); if (m) nums.add(m[1]); } // 数字前缀子文件夹也可被《NN》引用
+const stableTargets = {
+  'R-24A': '24_附表·江氏教程案例索引（1-120）.md',
+  'D-22A': '22_附表·三系数据对比.csv',
+  'D-22B': '22_附表2·六宫逐宫对照.csv',
+  'D-22C': '22_附表3·逐题材跨系对照.csv',
+  'D-29A': '29_附表·命法歌诀结构化.csv',
+};
+const bookDir = path.join(DIR, '..', '06_小六壬通识', '书稿');
+function stableIdExists(id) {
+  if (stableTargets[id]) return fs.existsSync(path.join(DIR, stableTargets[id]));
+  let m = /^R-(\d\d)$/.exec(id);
+  if (m) return mdFiles.filter(n => n.startsWith(m[1] + '_') && !n.startsWith(m[1] + '_附表')).length === 1;
+  m = /^B-(\d\d)$/.exec(id);
+  if (m && fs.existsSync(bookDir)) {
+    return fs.readdirSync(bookDir).some(n => n.startsWith(m[1] + '_第' + m[1] + '章_') && n.endsWith('.md'));
+  }
+  m = /^BA-([A-G])$/.exec(id);
+  if (m && fs.existsSync(bookDir)) return fs.readdirSync(bookDir).some(n => n.startsWith('附录' + m[1] + '_') && n.endsWith('.md'));
+  return false;
+}
+function invalidStableIds(text) {
+  const ids = [...new Set([...text.matchAll(/《\s*((?:R|D)-\d\d[A-Z]?|B-\d\d|BA-[A-G])\s*》/g)].map(m => m[1]))];
+  return ids.filter(id => !stableIdExists(id));
+}
 let refBad = 0;
 for (const f of mdFiles) {
   if (f.startsWith('24_附表')) continue; // 附表按24处理
   const t = fs.readFileSync(path.join(DIR, f), 'utf8');
   const refs = [...t.matchAll(/《\s*(\d{2})(?!\d)[^》]*》/g)].map(m => m[1]);
   const bad = [...new Set(refs)].filter(n => !nums.has(n));
-  if (bad.length) { log(f + ' → 无效引用: ' + bad.join(',')); refBad++; }
+  const badIds = invalidStableIds(t);
+  if (bad.length || badIds.length) {
+    log(f + ' → 无效引用: ' + bad.join(',') + (badIds.length ? '；无效唯一编号: ' + badIds.join(',') : ''));
+    refBad++;
+  }
 }
 if (!refBad) log('无失效引用');
 
@@ -73,6 +116,7 @@ const extra = [
   ['02_层说明', path.join(DIR, '..', '02_初步处理', '00_初步处理说明.md')],
   ['03_层说明', path.join(DIR, '..', '03_去封建迷信', 'README.md')],
   ['05_层说明', path.join(DIR, '..', '05_书籍整理', 'README.md')],
+  ['05_公开材料状态表', path.join(DIR, '..', '05_书籍整理', '公开材料状态表.md')],
   ['06_层说明', path.join(DIR, '..', '06_小六壬通识', 'README.md')],
 ];
 for (const [label, p] of extra) if (fs.existsSync(p)) scanList.push([label, p]);
@@ -94,7 +138,7 @@ log(polWarn ? ('存在 ' + polWarn + ' 处待规范表述') : '通过：未发�
 
 // 7) 书稿目录扫描（《06_小六壬通识/书稿》）
 log('\n=== 书稿目录扫描（06_小六壬通识/书稿） ===');
-const BOOK_DIR = path.join(DIR, '..', '06_小六壬通识', '书稿');
+const BOOK_DIR = bookDir;
 const BOOK_SKIP = new Set(['书稿审计记录.md']); // 元文档：政治与内容扫描均排除
 if (fs.existsSync(BOOK_DIR)) {
   const bookEntries = fs.readdirSync(BOOK_DIR, { withFileTypes: true });
@@ -125,7 +169,11 @@ if (fs.existsSync(BOOK_DIR)) {
     const t = fs.readFileSync(path.join(BOOK_DIR, f), 'utf8');
     const refs = [...new Set([...t.matchAll(/《\s*(\d{2})(?!\d)/g)].map(m => m[1]))];
     const bad = refs.filter(n => !nums.has(n));
-    if (bad.length) { log('书稿/' + f + ' → 无效引用: ' + bad.join(',')); bookRefBad++; }
+    const badIds = invalidStableIds(t);
+    if (bad.length || badIds.length) {
+      log('书稿/' + f + ' → 无效引用: ' + bad.join(',') + (badIds.length ? '；无效唯一编号: ' + badIds.join(',') : ''));
+      bookRefBad++;
+    }
   }
   log(bookRefBad ? ('书稿交叉引用：存在 ' + bookRefBad + ' 个文件含失效引用') : '书稿交叉引用：无失效引用');
   // 合订本与工具

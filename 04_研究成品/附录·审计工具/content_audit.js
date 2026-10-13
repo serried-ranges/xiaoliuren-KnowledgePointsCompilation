@@ -1,11 +1,11 @@
-// 小六壬资料治理 · 04研究成品 · 内容审计脚本（门禁：封建迷信等内容的扫描与降权提示）
-// 用法：在本文件夹运行  node content_audit.js
-// 输出：控制台摘要 + 同目录生成《内容审计报告.md》
-// 说明：本版新增"书稿目录扫描"（《06_小六壬通识/书稿》）与"附录目录扫描"（附录·* 子文件夹）；元文档《书稿审计记录》与派生文件《合订本》不参与扫描；《附录·审计工具》目录不参与扫描。
+// 小六壬资料治理 · 内容审计脚本
+// 用法：在本目录运行 node content_audit.js
+// 自动扫描用于定位复核线索；命中数不是审核结论，必须由审阅者查看上下文。
 const fs = require('fs');
 const path = require('path');
-const DIR = path.join(__dirname, '..'); // 知识包根目录
-const files = fs.readdirSync(DIR).filter(f => f.endsWith('.md'));
+
+const DIR = path.join(__dirname, '..');
+const BOOK = path.join(DIR, '..', '06_小六壬通识', '书稿');
 const buckets = {
   '神通符咒': /符咒|画符|书符|符板|符头|灵符|法事|法术|法门|咒语|神咒|咒|开坛|坛场/,
   '仙鬼巫': /大仙|仙家|出马|收魂|招魂|鬼门十三针|阴脉|阴魂|阴灵|野鬼|鬼魂|附体|附身/,
@@ -14,74 +14,88 @@ const buckets = {
   '信仰供养': /供奉|香火|敬神|拜佛|菩萨|城隍|土地公|报应|阴德|轮回|六道/,
   '疾病干预': /治病|疗病|医治|病人|病者|疾病|康复|痊愈/
 };
-function scanFile(fp) {
-  const t = fs.readFileSync(fp, 'utf8');
-  const line = { file: '', hits: {}, total: 0 };
-  for (const [k, re] of Object.entries(buckets)) {
-    const g = t.match(new RegExp(re.source, 'g'));
-    const n = g ? g.length : 0;
-    line.hits[k] = n;
-    line.total += n;
+
+function scanFile(fp, file) {
+  const lines = fs.readFileSync(fp, 'utf8').split(/\r?\n/);
+  const hits = Object.fromEntries(Object.keys(buckets).map(k => [k, 0]));
+  const contexts = [];
+  for (let i = 0; i < lines.length; i++) {
+    const perLine = [];
+    for (const [category, pattern] of Object.entries(buckets)) {
+      const found = lines[i].match(new RegExp(pattern.source, 'g')) || [];
+      if (found.length) {
+        hits[category] += found.length;
+        perLine.push([category, found.length]);
+      }
+    }
+    if (perLine.length) {
+      const excerpt = lines[i].trim().replace(/\s+/g, ' ').replace(/\|/g, '¦').replace(/`/g, "'").slice(0, 180);
+      contexts.push({ line: i + 1, categories: perLine, excerpt });
+    }
   }
-  return line;
-}
-const rows = [];
-for (const f of files) {
-  const line = scanFile(path.join(DIR, f));
-  line.file = f;
-  rows.push(line);
-}
-rows.sort((a, b) => b.total - a.total);
-let out = '# 内容审计报告（门禁扫描结果）\n\n';
-out += '> 分级说明：命中词多为 C 级"研究对象"（民俗文本原文样貌）。**收录≠采信**——如发现正文出现为迷信内容背书、指导实操、恐吓读者等表述，应修改并降权。\n\n';
-out += '| 文档 | 神通符咒 | 仙鬼巫 | 命理恐吓 | 改运化解 | 信仰供养 | 疾病干预 | 合计 |\n|---|---|---|---|---|---|---|---|\n';
-for (const r of rows) {
-  out += `| ${r.file} | ${r.hits['神通符咒']} | ${r.hits['仙鬼巫']} | ${r.hits['命理恐吓']} | ${r.hits['改运化解']} | ${r.hits['信仰供养']} | ${r.hits['疾病干预']} | **${r.total}** |\n`;
+  return { file, hits, total: Object.values(hits).reduce((sum, n) => sum + n, 0), contexts };
 }
 
-// === 附录目录扫描（附录·* 子文件夹内的 md；排除审计工具目录及其生成的报告） ===
+function rowsForFiles(files, base) {
+  return files.map(file => scanFile(path.join(base, file), file));
+}
+
+function walkMarkdown(dir, rel = '') {
+  const results = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) results.push(...walkMarkdown(full, rel + entry.name + '/'));
+    else if (entry.isFile() && entry.name.toLowerCase().endsWith('.md')) {
+      results.push(scanFile(full, rel + entry.name));
+    }
+  }
+  return results;
+}
+
+function renderSection(title, rows) {
+  let out = `## ${title}\n\n`;
+  out += '| 文档 | 神通符咒 | 仙鬼巫 | 命理恐吓 | 改运化解 | 信仰供养 | 疾病干预 | 命中数 |\n';
+  out += '|---|---:|---:|---:|---:|---:|---:|---:|\n';
+  for (const row of rows) {
+    const h = row.hits;
+    out += `| ${row.file} | ${h['神通符咒']} | ${h['仙鬼巫']} | ${h['命理恐吓']} | ${h['改运化解']} | ${h['信仰供养']} | ${h['疾病干预']} | ${row.total} |\n`;
+  }
+  out += '\n### 命中位置与上下文\n\n';
+  let n = 0;
+  for (const row of rows) {
+    for (const hit of row.contexts) {
+      const labels = hit.categories.map(([category, count]) => count > 1 ? `${category}×${count}` : category).join('、');
+      out += `- \`${row.file}:${hit.line}\`（${labels}）：${hit.excerpt}\n`;
+      n++;
+    }
+  }
+  if (!n) out += '无关键词命中。\n';
+  out += '\n';
+  return out;
+}
+
+const mdFiles = fs.readdirSync(DIR).filter(f => f.endsWith('.md')).sort();
+const researchRows = rowsForFiles(mdFiles, DIR);
+const csvFiles = fs.readdirSync(DIR).filter(f => f.endsWith('.csv')).sort();
+const csvRows = rowsForFiles(csvFiles, DIR);
 const appendixDirs = fs.readdirSync(DIR, { withFileTypes: true })
   .filter(d => d.isDirectory() && d.name.startsWith('附录·') && d.name !== '附录·审计工具')
   .map(d => d.name).sort();
-const appendixRows = [];
-for (const dn of appendixDirs) {
-  (function walk(dir, rel) {
-    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-      const p = path.join(dir, e.name);
-      if (e.isDirectory()) walk(p, rel + e.name + '/');
-      else if (e.name.endsWith('.md')) { const r = scanFile(p); r.file = rel + e.name; appendixRows.push(r); }
-    }
-  })(path.join(DIR, dn), dn + '/');
-}
-if (appendixRows.length) {
-  appendixRows.sort((a, b) => b.total - a.total);
-  out += '\n## 附录目录扫描（附录·* 子文件夹）\n\n';
-  out += '> 扫描对象 ' + appendixRows.length + ' 个 md（不含《附录·审计工具》目录）。\n\n';
-  out += '| 文档 | 神通符咒 | 仙鬼巫 | 命理恐吓 | 改运化解 | 信仰供养 | 疾病干预 | 合计 |\n|---|---|---|---|---|---|---|---|\n';
-  for (const r of appendixRows) {
-    out += `| ${r.file} | ${r.hits['神通符咒']} | ${r.hits['仙鬼巫']} | ${r.hits['命理恐吓']} | ${r.hits['改运化解']} | ${r.hits['信仰供养']} | ${r.hits['疾病干预']} | **${r.total}** |\n`;
-  }
-  out += `\n*附录命中合计：${appendixRows.reduce((s, r) => s + r.total, 0)} 处（C 级研究对象口径）*\n`;
-}
+const appendixRows = appendixDirs.flatMap(d => walkMarkdown(path.join(DIR, d), d + '/'));
+const bookFiles = fs.existsSync(BOOK)
+  ? fs.readdirSync(BOOK).filter(f => f.endsWith('.md') && f !== '书稿审计记录.md' && !f.includes('合订本')).sort()
+  : [];
+const bookRows = rowsForFiles(bookFiles, BOOK);
 
-// === 书稿目录扫描（《06_小六壬通识/书稿》；排除元文档与派生文件） ===
-const BOOK = path.join(DIR, '..', '06_小六壬通识', '书稿');
-let bookTotal = 0, bookCount = 0;
-if (fs.existsSync(BOOK)) {
-  const bfiles = fs.readdirSync(BOOK).filter(f => f.endsWith('.md') && f !== '书稿审计记录.md' && !f.includes('合订本')).sort();
-  const rows2 = bfiles.map(f => { const r = scanFile(path.join(BOOK, f)); r.file = f; return r; });
-  rows2.sort((a, b) => b.total - a.total);
-  bookTotal = rows2.reduce((s, r) => s + r.total, 0);
-  bookCount = bfiles.length;
-  out += '\n## 书稿目录扫描（06_小六壬通识/书稿）\n\n';
-  out += '> 扫描对象 ' + bfiles.length + ' 个 md；已排除：书稿审计记录（元文档）、合订本（派生文件）。命中语境均为：历史断辞原文、名称级记录、门禁术语。\n\n';
-  out += '| 文档 | 神通符咒 | 仙鬼巫 | 命理恐吓 | 改运化解 | 信仰供养 | 疾病干预 | 合计 |\n|---|---|---|---|---|---|---|---|\n';
-  for (const r of rows2) {
-    out += `| ${r.file} | ${r.hits['神通符咒']} | ${r.hits['仙鬼巫']} | ${r.hits['命理恐吓']} | ${r.hits['改运化解']} | ${r.hits['信仰供养']} | ${r.hits['疾病干预']} | **${r.total}** |\n`;
-  }
-  out += `\n*书稿命中合计：${bookTotal} 处（C 级研究对象口径）*\n`;
-}
-
-out += `\n*生成时间：${new Date().toISOString().slice(0, 10)} ｜ 扫描对象：研究层 ${files.length} 份文档 ＋ 附录 ${appendixRows.length} 份${bookCount ? ' ＋ 书稿 ' + bookCount + ' 份文档' : ''}*\n`;
-fs.writeFileSync(path.join(__dirname, '内容审计报告.md'), out, 'utf8');
-console.log('内容审计完成：研究层 ' + files.length + ' 份＋附录 ' + appendixRows.length + ' 份，共命中 ' + (rows.reduce((s, r) => s + r.total, 0) + appendixRows.reduce((s, r) => s + r.total, 0)) + ' 处；书稿 ' + bookCount + ' 份，共命中 ' + bookTotal + ' 处（C级研究对象）。报告：内容审计报告.md');
+const totals = [researchRows, csvRows, appendixRows, bookRows].map(group =>
+  group.reduce((sum, row) => sum + row.total, 0));
+let report = '# 内容审计报告（关键词扫描与人工复核）\n\n';
+report += '> 自动扫描只用于定位上下文，不预设命中分类，也不单独构成通过/失败结论。请逐项复核命中位置，并在发布审计记录中注明处理结果。\n\n';
+report += `扫描范围：研究 Markdown ${researchRows.length} 份；CSV ${csvRows.length} 份；附录 Markdown ${appendixRows.length} 份；书稿 Markdown ${bookRows.length} 份。二进制图片/PDF 不由此脚本扫描，其来源与许可须由材料状态表另行审阅。\n\n`;
+report += renderSection('研究层 Markdown', researchRows);
+report += renderSection('研究层 CSV', csvRows);
+report += renderSection('附录 Markdown', appendixRows);
+report += renderSection('书稿 Markdown', bookRows);
+report += `*生成时间：${new Date().toISOString().slice(0, 10)}。命中总数（研究 Markdown/CSV/附录/书稿）：${totals.join(' / ')}。人工复核状态：待记录。*\n`;
+fs.writeFileSync(path.join(__dirname, '内容审计报告.md'), report, 'utf8');
+console.log(`内容扫描完成：研究 MD ${researchRows.length} 份、CSV ${csvRows.length} 份、附录 MD ${appendixRows.length} 份、书稿 MD ${bookRows.length} 份；命中 ${totals.reduce((a, b) => a + b, 0)} 处；报告含行号和上下文。`);

@@ -126,8 +126,8 @@
 | 92 | 日文维基百科《六曜》 | ★★ | https://ja.wikipedia.org/wiki/六曜 |
 | 93 | 和菓子司庄瀬《大安・仏滅のいわれ》（引朝日新闻等） | ★★ | https://wagashi-shose.tokyo/2018/07/06/taian |
 | 94 | 日本日历文化网站（六曜解说） | ★ | original-calendar.com/benri/rokuyou.html 等 |
-| 95 | 早稻田大学图书馆《头书长历》（1688）书目与数字档 | ★★★ | wul.waseda.ac.jp/kotenseki/html/bunko31/bunko31_e1341/ |
-| 96 | 早稻田大学图书馆《鼇头长历》 | ★★★ | wul.waseda.ac.jp/kotenseki/html//ni05/ni05_02152/ |
+| 95 | 早稻田大学古典籍数据库记录 #95 | ★★★ | https://www.wul.waseda.ac.jp/kotenseki/html/bunko31/bunko31_e1341/index.html（未获发布许可；工作区仍有七幅复制页图，清除前不得提交） |
+| 96 | 早稻田大学古典籍数据库记录 #96 | ★★★ | https://www.wul.waseda.ac.jp/kotenseki/html/ni05/ni05_02152/index.html（未获发布许可；工作区仍有七幅复制页图，清除前不得提交） |
 | 97 | 浄土宗大辞典「六曜」 | ★★★ | jodoshuzensho.jp/daijiten/index.php/六曜 |
 | 98 | kotobank「六曜」 | ★★ | https://kotobank.jp/word/六曜-152697 |
 | 99 | 東照寺《12.「六曜」》 | ★ | tousyouji.web.fc2.com（六曜名称演变） |
@@ -137,14 +137,14 @@
 | 103 | chinaknowledge.de《Jujia biyong shilei quanji》 | ★★★ | chinaknowledge.de（英文工具书） |
 | 104 | 东京大学东洋文化研究所汉籍目录（宽文版） | ★★★ | l.u-tokyo.ac.jp/GT/kanseki/pdf/0363.pdf |
 | 105 | ctext《居家必用》章节（择时内容） | ★★ | ctext.org/wiki.pl?if=gb&chapter=516702 |
-| 106 | 早稻田《头书长历》逐页图像库（全68页） | ★★★ | archive.wul.waseda.ac.jp/kosho/bunko31/bunko31_e1341/ |
+| 106 | 早稻田大学古典籍数据库记录 #106 | ★★★ | https://archive.wul.waseda.ac.jp/kosho/bunko31/bunko31_e1341/（未获发布许可；工作区仍有七幅复制页图，清除前不得提交） |
 | 107 | koyomil（こよみる）六曜系列 | ★★ | https://koyomil.com/tomobiki |
 | 108 | rekichu（暦注カレンダー）《六曜とは》 | ★★ | https://rekichu.com/about/rokuyou |
-| 109 | 早稻田《鼇头长历》藏本（1816补刻，全61页） | ★★★ | archive.wul.waseda.ac.jp/kosho/ni05/ni05_02152/ |
+| 109 | 早稻田大学古典籍数据库记录 #109 | ★★★ | https://archive.wul.waseda.ac.jp/kosho/ni05/ni05_02152/（未获发布许可；工作区仍有七幅复制页图，清除前不得提交） |
 | 110 | 陈君安《道家小六壬学术三棱镜》（2025） | ★★ | https://chenzhihong.com/45.html |
 | 111 | 澄易学斋《关于我》《学习路径》 | ★ | chenzhihong.com/about、/210.html |
-| 112 | 《道家小六壬-理论基础》59页 PDF | ★★ | github.com/Auroraol/-divination（附录存件） |
-| 113 | GitHub《小六壬》学习笔记 | ★ | github.com/Auroraol/-divination（附录存件） |
+| 112 | 《道家小六壬-理论基础》59页PDF（GitHub传播件；许可未核） | ★★ | https://github.com/Auroraol/-divination（来源卡见05；未镜像PDF/全文） |
+| 113 | GitHub《小六壬》学习笔记 | ★ | github.com/Auroraol/-divination（来源卡见05；笔记镜像已撤，许可未核） |
 | 114 | 168易享《邵一尘 小六壬解惑 678页》 | ★ | 168855.xyz（文献线索） |
 | 115 | 0467 资源站《道家小六壬掐指全套教学课程》 | ★ | 0467.cc/detail-10399.html（卷本目录证据） |
 | 116 | 趣资源（qzy8）小六壬课程列表 | ★ | qzy8.com/yi-jing-feng-shui/xiao-liu-ren（2026-10 抽检 404，或已改版） |
@@ -169,14 +169,14 @@
 | 135 | 易学就会／龙腾国学小六壬资源列表 | ★ | yixuejiuhui123.com、ltgx99.com/xlr |
 | 136 | 知乎《小六壬寻物》（八百·案例帖） | ★ | https://zhuanlan.zhihu.com/p/640486763 |
 | 137 | ClawHub《算卦综合 Skill》 | ★ | https://clawhub.ai/sprint-yy/skills/comprehensive-divination-skill |
-| 138 | 国学一字堂论坛《小六壬（已更153本）》 | ★ | yzthome.com/thread-28519.htm |
+| 138 | 国学一字堂论坛《小六壬（已更153本）》 | ★ | https://yzthome.com/thread-28519.htm（仅来源线索；完整资源清单未复制） |
 | 139 | 易学巴巴小六壬分类页 | ★ | https://www.yixue88.cn/zhouyi/xiaoliuren/ |
 | 140 | 随风易学小六壬分类页 | ★ | http://dz131.com/category-22.html |
 | 141 | 龙腾国学四明居士 678 页条目页 | ★ | https://www.ltgx99.com/post/51994.html |
-| 142 | 江氏官方排盘系统 V2.0（含 js 源码） | ★★ | http://www.jiangyangjun.com/paipan/ |
+| 142 | 江氏官方排盘系统 V2.0（官方网页与使用说明） | ★★ | https://jiangyangjun.com/paipan/（研究层只保留必要事实摘要，不镜像JS） |
 | 143 | wizardjza《民间掐指一算》（中国台湾站点） | ★ | https://www.wizardjza.com/post.php?action=view&id=18 |
-| 144 | 《江氏小六壬 官方教程（第一版）》（江春义／江阳君，118 页） | ★★★ | （官方电子版；2024-08） |
-| 145 | 道传小六壬·六卷合抄本（御法门手抄本，146 页扫描；taoismer.com，2024-10 公开） | ★★ | https://taoismer.com/《道传小六壬》/ |
+| 144 | 《江氏小六壬 官方教程（第一版）》（江春义／江阳君，118页） | ★★★ | https://jiangyangjun.com/post/82.html（官方发布公告；未见整本镜像许可） |
+| 145 | 道传小六壬·六卷合抄本（御法门手抄本扫描；taoismer.com，2024-10） | ★★ | https://taoismer.com/《道传小六壬》/（免费查看不等于镜像许可） |
 | 146 | 国学资源网《道传小六壬全6卷合集》条目页（六卷目录；付费站） | ★ | https://www.guoxueziyuan.com/101.html |
 | 147 | 中国台湾"教育部重编国语辞典修订本"·小六壬词条（教育云"教育百科"镜像） | ★★ | https://pedia.cloud.edu.tw/Entry/Detail?search=%E5%B0%8F%E5%85%AD%E5%A3%AC |
 | 148 | 汉典"马前课"词条（引明代《喻世明言》书证） | ★ | https://www.zdic.net/hans/马前课 |
@@ -190,8 +190,8 @@
 | 156 | 中国心理科学与文化研究院《拜神、求佛、问道、求签、算命的心理干预作用机制》 | ★ | https://cpsycat.press/index.php/archives/28/ |
 | 157 | 《小六壬讲义》（79 页；"书童"整理，五术书社资源站，2016） | ★ | https://www.5shubook.com/p-95994.html |
 | 158 | 奇门派《小六壬方法簡析》《小六壬全文解釋》两篇（诸说辑录与霍斐然线索） | ★ | https://www.qimenpai.com/blog/190 |
-| 159 | 《东北高级小六壬案例120》（江氏系第三方 120 例；含同名 HTML"分类查找"检索版） | ★ | （本地新增件，来源待考；02 层全文与结构化） |
-| 160 | 逸轩《江氏小六壬一本通》（江氏体系民间教材；67 页扫描件） | ★ | （本地新增件；基础篇／分类占／技法篇三编） |
+| 159 | 《东北高级小六壬案例120》（本地流传件；作者/出版方待核） | ★ | 来源待考；不作为公开结论依据，见05状态表 |
+| 160 | 逸轩《江氏小六壬一本通》（本地扫描件署名；来源待核） | ★ | 未找到可核验原始发布页；不作为公开结论依据，见05状态表 |
 
 > **整理方法与局限**：以"中文关键词多轮检索"为主，优先采信古籍原文、官方文献与研究性长文；部分网页为转载内容、未逐条溯源；部分古籍未见高质量点校本；流派口诀无法穷尽。本书不对占卜内容作真伪、灵验判断。
 

@@ -32,6 +32,9 @@ if (!fs.existsSync(MD_FILE)) {
   process.exit(1);
 }
 let md = fs.readFileSync(MD_FILE, 'utf8');
+// PDF 以书签和可点击目录导航；移除章末返回链接及其分隔线，避免章节恰好跨页时单独占一页。
+md = md.replace(/^> \[↑ 返回目录\]\(#top\)[ \t]*\r?\n[ \t]*\r?\n---[ \t]*\r?\n[ \t]*\r?\n/gm, '');
+md = md.replace(/^> \[↑ 返回目录\]\(#top\)[ \t]*$/gm, '');
 md = md.replace(/^# 《小六壬通识：源流·体系·诸派》· 合订本[\s\S]*?\n---\n/, '');
 
 // ---------- ② 极简 Markdown → HTML ----------
@@ -213,7 +216,7 @@ ${pagedCfg}
   <div class="s">源流 · 体系 · 诸派</div>
   <div class="m">
     依据《小六壬资料治理》04 研究成品层 通识化重写<br>
-    书稿第 1 稿 · 完整稿 ｜ 2026-10-05<br>
+    书稿第 2 稿 · 来源复核修订 ｜ 2026-10-13<br>
     传统文化与民俗研究读物 · 非占卜指导手册
   </div>
 </section>
